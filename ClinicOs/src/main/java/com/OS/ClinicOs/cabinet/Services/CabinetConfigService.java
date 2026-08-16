@@ -37,7 +37,7 @@ public class CabinetConfigService {
     @Transactional
     public ResponseEntity<String> CreateNewCabinet(CabinetRequestDto datacabinet , UserDetails user_concted ){
         try{
-            User user = this.userrepository.findByEmail(user_concted.getUsername()) ;
+            User user = this.userrepository.findByEmailAndDeletedAtIsNull(user_concted.getUsername()) ;
             Cabinet new_cabinet = Cabinet.builder()
                     .nom(datacabinet.nom())
                     .ville(datacabinet.ville())
@@ -64,7 +64,7 @@ public class CabinetConfigService {
     // show Cabinet
     public CabinetResponse getcabinet(UserDetails user_conected ){
         try{
-            User user = this.userrepository.findByEmail(user_conected.getUsername()) ;
+            User user = this.userrepository.findByEmailAndDeletedAtIsNull(user_conected.getUsername()) ;
             Cabinet cabinet = user.getMedecin().getCabinet();
             return  new CabinetResponse(
                     cabinet.getNom() ,

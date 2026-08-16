@@ -40,7 +40,7 @@ public class AdminRegister {
         try{
 
             // tester acount :
-            User user = this.userrepository.findByEmail(registerdata.email()) ;
+            User user = this.userrepository.findByEmailAndDeletedAtIsNull(registerdata.email()) ;
             if(user != null){
                 throw new AccountExisteException("user existe ") ;
             }

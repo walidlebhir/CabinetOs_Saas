@@ -3,9 +3,11 @@ package com.OS.ClinicOs.dossierMedical.Entity;
 import com.OS.ClinicOs.medecin.Entity.Medecin;
 import com.OS.ClinicOs.patient.Entity.Patient;
 import com.OS.ClinicOs.renezvous.Entity.Rendezvous;
+import com.OS.ClinicOs.shared.entity.SoftDeletableEntity;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.SQLRestriction;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.hibernate.annotations.UuidGenerator;
 
@@ -16,10 +18,11 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "dossier_medical")
+@SQLRestriction("deleted_at IS NULL")
 @Setter @Getter
 @AllArgsConstructor @NoArgsConstructor
 @Builder
-public class Dossier_medical {
+public class Dossier_medical extends SoftDeletableEntity {
 
     @Id
     @GeneratedValue

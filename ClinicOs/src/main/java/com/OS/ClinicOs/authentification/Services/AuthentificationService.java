@@ -9,6 +9,7 @@ import com.OS.ClinicOs.authentification.Entity.Refresh_Token;
 import com.OS.ClinicOs.authentification.Repository.RefreshTokenRepository;
 import com.OS.ClinicOs.patient.Entity.Patient;
 import com.OS.ClinicOs.patient.Repository.PatientRepository;
+import com.OS.ClinicOs.shared.exception.exception_per.AccountDesactiveException;
 import com.OS.ClinicOs.shared.exception.exception_per.AccountExisteException;
 import com.OS.ClinicOs.shared.exception.exception_per.DatabaseConnexionException;
 import com.OS.ClinicOs.shared.exception.exception_per.RessourceNotFoundException;
@@ -56,7 +57,7 @@ public class AuthentificationService {
 
         try{
             // detect if Acount existe
-            User UserAcount = this.userrepository.findByEmail(registerdata.email());
+            User UserAcount = this.userrepository.findByEmailAndDeletedAtIsNull(registerdata.email());
             if(UserAcount != null){
                 // acount exsite
                 throw  new AccountExisteException("this compt deja existe ") ;
@@ -91,10 +92,14 @@ public class AuthentificationService {
                 )
         );
 
-        User user = this.userrepository.findByEmail(logindata.email()) ;
+        User user = this.userrepository.findByEmailAndDeletedAtIsNull(logindata.email()) ;
         if(user == null){
             throw  new RessourceNotFoundException("user n'existe pas ") ;
 
+        }
+
+        if(!Boolean.TRUE.equals(user.getIsActive())){
+            throw new AccountDesactiveException("Compte desactive. Veuillez contacter l'administrateur.") ;
         }
 
         // generer acces token

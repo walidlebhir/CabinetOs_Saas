@@ -2,19 +2,22 @@ package com.OS.ClinicOs.planning.Entity;
 
 import com.OS.ClinicOs.medecin.Entity.Medecin;
 import com.OS.ClinicOs.planning.Entity.Enum.Week_Day;
+import com.OS.ClinicOs.shared.entity.SoftDeletableEntity;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.SQLRestriction;
 
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 @Entity
 @Table(name = "disponibilite_medcin")
+@SQLRestriction("deleted_at IS NULL")
 @Setter @Getter
 @AllArgsConstructor @NoArgsConstructor
 @Builder
-public class Disponibilite_Medcin {
+public class Disponibilite_Medcin extends SoftDeletableEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

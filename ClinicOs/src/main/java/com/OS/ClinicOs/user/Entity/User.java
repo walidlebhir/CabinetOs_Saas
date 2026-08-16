@@ -7,9 +7,11 @@ import com.OS.ClinicOs.notification.Entity.Notification;
 import com.OS.ClinicOs.patient.Entity.Patient;
 import com.OS.ClinicOs.renezvous.Entity.Rendezvous;
 import com.OS.ClinicOs.user.Entity.Enum.Role;
+import com.OS.ClinicOs.shared.entity.SoftDeletableEntity;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.SQLRestriction;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.hibernate.annotations.UuidGenerator;
 
@@ -20,10 +22,11 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "users")
+@SQLRestriction("deleted_at IS NULL")
 @Getter @Setter
 @AllArgsConstructor @NoArgsConstructor
 @Builder
-public class User {
+public class User extends SoftDeletableEntity {
 
     @Id
     @GeneratedValue
@@ -33,6 +36,10 @@ public class User {
     private String name ;
     private String email;
     private String password;
+
+    @Column(nullable = false)
+    @Builder.Default
+    private Boolean isActive = true;
 
     @Enumerated(EnumType.STRING)
     private Role role;

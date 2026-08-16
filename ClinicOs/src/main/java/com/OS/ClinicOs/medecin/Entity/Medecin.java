@@ -7,10 +7,12 @@ import com.OS.ClinicOs.dossierMedical.Entity.Ordonnance;
 import com.OS.ClinicOs.planning.Entity.Disponibilite_Medcin;
 import com.OS.ClinicOs.planning.Entity.Indisponibilite;
 import com.OS.ClinicOs.renezvous.Entity.Rendezvous;
+import com.OS.ClinicOs.shared.entity.SoftDeletableEntity;
 import com.OS.ClinicOs.user.Entity.User;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.SQLRestriction;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.hibernate.annotations.UuidGenerator;
 
@@ -21,10 +23,11 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "medecin")
+@SQLRestriction("deleted_at IS NULL")
 @Getter @Setter
 @AllArgsConstructor @NoArgsConstructor
 @Builder
-public class Medecin {
+public class Medecin extends SoftDeletableEntity {
 
     @Id
     @UuidGenerator

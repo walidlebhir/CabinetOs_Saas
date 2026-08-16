@@ -2,9 +2,11 @@ package com.OS.ClinicOs.abonnement.Entity;
 
 import com.OS.ClinicOs.abonnement.Entity.Enum.StatusAbonnement;
 import com.OS.ClinicOs.cabinet.Entity.Cabinet;
+import com.OS.ClinicOs.shared.entity.SoftDeletableEntity;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.SQLRestriction;
 import org.hibernate.annotations.UuidGenerator;
 
 import java.time.LocalDateTime;
@@ -14,10 +16,11 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "abonnement")
+@SQLRestriction("deleted_at IS NULL")
 @Setter @Getter
 @AllArgsConstructor @NoArgsConstructor
 @Builder
-public class Abonnement {
+public class Abonnement extends SoftDeletableEntity {
 
     @Id
     @UuidGenerator

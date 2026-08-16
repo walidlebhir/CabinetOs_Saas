@@ -5,10 +5,12 @@ import com.OS.ClinicOs.dossierMedical.Entity.Dossier_medical;
 import com.OS.ClinicOs.medecin.Entity.Medecin;
 import com.OS.ClinicOs.patient.Entity.Patient;
 import com.OS.ClinicOs.renezvous.Entity.Enum.Status_RendezVous;
+import com.OS.ClinicOs.shared.entity.SoftDeletableEntity;
 import com.OS.ClinicOs.user.Entity.User;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.SQLRestriction;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.hibernate.annotations.UuidGenerator;
 
@@ -18,10 +20,11 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "rendezvous")
+@SQLRestriction("deleted_at IS NULL")
 @Setter @Getter
 @AllArgsConstructor @NoArgsConstructor
 @Builder
-public class Rendezvous {
+public class Rendezvous extends SoftDeletableEntity {
 
     @Id
     @GeneratedValue

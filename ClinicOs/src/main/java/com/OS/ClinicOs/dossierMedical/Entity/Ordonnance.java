@@ -3,18 +3,21 @@ package com.OS.ClinicOs.dossierMedical.Entity;
 import com.OS.ClinicOs.dossierMedical.Entity.Enum.StatusOrdonnance;
 import com.OS.ClinicOs.medecin.Entity.Medecin;
 import com.OS.ClinicOs.patient.Entity.Patient;
+import com.OS.ClinicOs.shared.entity.SoftDeletableEntity;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.SQLRestriction;
 
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "ordonnance")
+@SQLRestriction("deleted_at IS NULL")
 @Getter @Setter
 @AllArgsConstructor @NoArgsConstructor
 @Builder
-public class Ordonnance {
+public class Ordonnance extends SoftDeletableEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
