@@ -5,6 +5,7 @@ import com.OS.ClinicOs.shared.exception.exception_per.AutreException;
 import com.OS.ClinicOs.shared.exception.exception_per.DatabaseConnexionException;
 import com.OS.ClinicOs.shared.exception.exception_per.Dto.ErrorResponse;
 import com.OS.ClinicOs.shared.exception.exception_per.PersonnelleException;
+import com.OS.ClinicOs.shared.exception.exception_per.RendezvousDejaReserveException;
 import com.OS.ClinicOs.shared.exception.exception_per.RessourceNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
@@ -59,6 +60,14 @@ public class GlobalException {
     @ExceptionHandler(AccountExisteException.class)
     public ResponseEntity<ErrorResponse> handleAccountExisteException(
             AccountExisteException ex,
+            HttpServletRequest request
+    ) {
+        return buildResponse(HttpStatus.CONFLICT, ex.getMessage(), request);
+    }
+
+    @ExceptionHandler(RendezvousDejaReserveException.class)
+    public ResponseEntity<ErrorResponse> handleRendezvousDejaReserveException(
+            RendezvousDejaReserveException ex,
             HttpServletRequest request
     ) {
         return buildResponse(HttpStatus.CONFLICT, ex.getMessage(), request);

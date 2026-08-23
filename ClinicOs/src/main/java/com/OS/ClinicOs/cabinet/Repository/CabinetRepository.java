@@ -3,7 +3,10 @@ package com.OS.ClinicOs.cabinet.Repository;
 import com.OS.ClinicOs.cabinet.Entity.Cabinet;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.List;
 import java.util.UUID;
 
 public interface CabinetRepository extends JpaRepository<Cabinet, UUID> {
+
+    List<Cabinet> findByAdmin_Email(String email);
 }

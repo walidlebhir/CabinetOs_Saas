@@ -6,6 +6,7 @@ import com.OS.ClinicOs.audit.Infra.Entity.AuditLog;
 import com.OS.ClinicOs.cabinet.Entity.Enum.Status;
 import com.OS.ClinicOs.medecin.Entity.Medecin;
 import com.OS.ClinicOs.shared.entity.SoftDeletableEntity;
+import com.OS.ClinicOs.user.Entity.User;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -44,6 +45,10 @@ public class Cabinet extends SoftDeletableEntity {
 
     @Enumerated(EnumType.STRING)
     private Status status;
+
+    @ManyToOne
+    @JoinColumn(name = "admin_id")
+    private User admin;
 
     @OneToMany(mappedBy = "cabinet")
     @Builder.Default

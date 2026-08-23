@@ -14,6 +14,7 @@ import org.hibernate.annotations.SQLRestriction;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.hibernate.annotations.UuidGenerator;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.UUID;
@@ -43,20 +44,28 @@ public class Rendezvous extends SoftDeletableEntity {
     @JoinColumn(name = "cree_par_id")
     private User creePar;
 
+
     @OneToOne(mappedBy = "rendezvous")
     private Dossier_medical dossierMedical;
 
     @OneToOne(mappedBy = "rendezvous")
     private Avis avis;
 
-    private LocalTime heur_debut;
-    private LocalTime heur_fin;
+    @Column(name = "date_rendezvous")
+    private LocalDate dateRendezvous;
+
+    @Column(name = "heur_debut")
+    private LocalTime heureDebut;
+
+    @Column(name = "heur_fin")
+    private LocalTime heureFin;
 
     @Enumerated(EnumType.STRING)
     private Status_RendezVous status;
 
     private String motif;
     private String note_interne;
+
 
     @CreationTimestamp
     private LocalDateTime CreatedAt;

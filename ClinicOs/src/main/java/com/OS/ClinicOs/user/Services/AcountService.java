@@ -52,4 +52,8 @@ public class AcountService {
 
         return ResponseEntity.ok("Compte active avec succes.");
     }
+
+    // une admin medecin peut cre pleusieur acount
+
+
 }
