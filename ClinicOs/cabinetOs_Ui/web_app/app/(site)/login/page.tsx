@@ -36,6 +36,10 @@ export default function LoginPage() {
 
       if (payload?.role === "ADMIN") {
         router.push("/selection-cabinet");
+      } else if (payload?.role === "MEDECIN") {
+        router.push("/espace-medecin");
+      } else if (payload?.role === "SECRETAIRE") {
+        router.push("/espace-secretaire");
       } else {
         router.push("/espace-patient");
       }

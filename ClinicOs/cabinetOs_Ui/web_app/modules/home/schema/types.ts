@@ -8,6 +8,8 @@ export type CabinetHome = {
   localisation: string | null;
   status: CabinetStatus;
   nombreMedecins: number;
+  latitude: number | null;
+  longitude: number | null;
 };
 
 export type MedecinDetail = {

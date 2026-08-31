@@ -22,6 +22,9 @@ public record CabinetRequestDto(
         Status status,
 
         @Size(max = 200, message = "La localisation doit contenir au maximum 200 caracteres")
-        String localisation
+        String localisation ,
+
+        Double latitude ,
+        Double longitude
 ) {
 }

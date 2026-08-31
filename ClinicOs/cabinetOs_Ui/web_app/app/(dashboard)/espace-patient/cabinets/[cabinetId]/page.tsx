@@ -149,9 +149,14 @@ export default function CabinetDetailPage() {
                     {medecin.nom?.[0]}
                   </span>
                   <div className="min-w-0 leading-tight">
-                    <h3 className="truncate text-base font-bold text-medos-navy">
-                      Dr. {medecin.prenom} {medecin.nom}
-                    </h3>
+                    <Link
+                      href={`/espace-patient/cabinets/${cabinet.id}/medecins/${medecin.id}`}
+                      className="truncate text-base font-bold text-medos-navy transition-colors hover:text-medos-teal-dark"
+                    >
+                      <span className="block truncate">
+                        Dr. {medecin.prenom} {medecin.nom}
+                      </span>
+                    </Link>
                     <p className="mt-0.5 inline-flex items-center gap-1 text-xs font-medium text-medos-teal-dark">
                       <BadgeCheck className="h-3.5 w-3.5" />
                       {medecin.specialite}
@@ -186,10 +191,10 @@ export default function CabinetDetailPage() {
                 )}
 
                 <Link
-                  href="/espace-patient/rendez-vous"
+                  href={`/espace-patient/cabinets/${cabinet.id}/medecins/${medecin.id}`}
                   className="mt-4 inline-flex h-9 items-center justify-center gap-2 rounded-lg bg-medos-teal px-4 text-sm font-medium text-white transition-colors hover:bg-medos-teal-dark"
                 >
-                  Prendre rendez-vous
+                  Voir le profil & prendre rendez-vous
                 </Link>
               </article>
             ))}

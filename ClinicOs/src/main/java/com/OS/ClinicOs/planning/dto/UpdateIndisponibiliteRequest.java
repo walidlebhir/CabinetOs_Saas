@@ -5,15 +5,11 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
 import java.time.LocalDateTime;
-import java.util.UUID;
 
 public record UpdateIndisponibiliteRequest(
 
         @NotNull(message = "id de l'indisponibilite est obligatoire")
         Long id ,
-
-        @NotNull(message = "medecinId est obligatoire")
-        UUID medecinId ,
 
         LocalDateTime dateDebut ,
 

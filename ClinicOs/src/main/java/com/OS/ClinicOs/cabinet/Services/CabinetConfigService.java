@@ -49,6 +49,8 @@ public class CabinetConfigService {
                 .status(datacabinet.status())
                 .localisation(datacabinet.localisation())
                 .specialite(datacabinet.specialite())
+                .latitude(datacabinet.latitude())
+                .longitude(datacabinet.longitude())
                 .admin(user)
                 .build();
 
@@ -103,6 +105,8 @@ public class CabinetConfigService {
         cabinet.setVille(datacabinet.ville());
         cabinet.setLocalisation(datacabinet.localisation());
         cabinet.setStatus(datacabinet.status());
+        cabinet.setLatitude(datacabinet.latitude());
+        cabinet.setLongitude(datacabinet.longitude());
 
         this.cabinetRepository.save(cabinet);
 
@@ -153,7 +157,9 @@ public class CabinetConfigService {
                 cabinet.getSpecialite() ,
                 cabinet.getVille() ,
                 cabinet.getLocalisation() ,
-                cabinet.getStatus()
+                cabinet.getStatus() ,
+                cabinet.getLatitude() ,
+                cabinet.getLongitude()
         );
     }
 }

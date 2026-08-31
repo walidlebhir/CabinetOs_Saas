@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
-import { CabinetConfig } from "@/components/admin/cabinet-config";
+import { ParametresTabs } from "@/components/admin/parametres-tabs";
 
 export const metadata: Metadata = {
-  title: "Paramètres du cabinet",
+  title: "Paramètres",
 };
 
 export default function ParametresCabinetPage() {
-  return <CabinetConfig />;
+  return <ParametresTabs />;
 }

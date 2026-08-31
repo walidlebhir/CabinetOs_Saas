@@ -11,6 +11,8 @@ public record CabinetHomeResponse(
         String ville ,
         String localisation ,
         Status status ,
-        int nombreMedecins
+        int nombreMedecins ,
+        Double latitude ,
+        Double longitude
 ) {
 }

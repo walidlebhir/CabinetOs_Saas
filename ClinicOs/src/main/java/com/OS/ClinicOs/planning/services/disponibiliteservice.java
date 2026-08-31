@@ -41,9 +41,7 @@ public class disponibiliteservice {
 
     @Transactional
     @Audit(operation = Action.CREATE , description = "Creation d'une disponibilite par un medecin")
-    public DisponibiliteResponse createDisponibilite(DisponibiliteRequest request) {
-
-        Medecin medecin = getMedecin(request.medecinId()) ;
+    public DisponibiliteResponse createDisponibilite(Medecin medecin , DisponibiliteRequest request) {
 
         validerHoraires(
                 request.heurDebut() ,
@@ -62,7 +60,7 @@ public class disponibiliteservice {
 
         Disponibilite_Medcin disponibilite = Disponibilite_Medcin.builder()
                 .medecin(medecin)
-                .Joursemaine(request.joursemaine())
+                .joursemaine(request.joursemaine())
                 .heur_debut(request.heurDebut())
                 .heur_fin(request.heurFin())
                 .dure_creneau(request.dureCreneau())
@@ -74,18 +72,30 @@ public class disponibiliteservice {
         return mapToResponse(disponibiliterepository.save(disponibilite)) ;
     }
 
+    @Audit(operation = Action.CREATE , description = "Creation en lot des disponibilites du planning")
+    public List<DisponibiliteResponse> createDisponibilites(Medecin medecin , List<DisponibiliteRequest> requests) {
+
+        if (requests == null || requests.isEmpty()){
+            return List.of() ;
+        }
+
+        return requests.stream()
+                .map(request -> this.createDisponibilite(medecin , request))
+                .toList() ;
+    }
+
     @Transactional
     @Audit(operation = Action.UPDATE , description = "Modification d'une disponibilite par un medecin")
-    public ResponseEntity<String> updateDisponibilite(UpdateDisponibiliteRequest request) {
+    public ResponseEntity<String> updateDisponibilite(Medecin medecin , UpdateDisponibiliteRequest request) {
 
         Disponibilite_Medcin disponibilite = disponibiliterepository.findById(request.id())
                 .orElseThrow(() -> new RessourceNotFoundException(
                         "Disponibilite not found with id : " + request.id()
                 ));
 
-        if (!disponibilite.getMedecin().getId().equals(request.medecinId())){
+        if (!disponibilite.getMedecin().getId().equals(medecin.getId())){
             throw new PersonnelleException(
-                    "Cette disponibilite n'appartient pas au medecin : " + request.medecinId()
+                    "Cette disponibilite n'appartient pas au medecin connecte "
             );
         }
 
@@ -98,7 +108,7 @@ public class disponibiliteservice {
         validerHoraires(heurDebut , heurFin , pauseDebut , pauseFin);
 
         if (request.joursemaine() != null || request.heurDebut() != null || request.heurFin() != null){
-            verifierChevauchement(request.medecinId() , jour , heurDebut , heurFin , disponibilite.getId());
+            verifierChevauchement(medecin.getId() , jour , heurDebut , heurFin , disponibilite.getId());
         }
 
         if (request.joursemaine() != null) disponibilite.setJoursemaine(request.joursemaine());
@@ -115,18 +125,32 @@ public class disponibiliteservice {
     }
 
     @Transactional
-    @Audit(operation = Action.DELETE , description = "Suppression logique d'une disponibilite")
-    public ResponseEntity<String> deleteDisponibilite(Long id) {
+    @Audit(operation = Action.DELETE , description = "Suppression logique d'une disponibilite par le medecin connecte")
+    public ResponseEntity<String> deleteDisponibilite(Medecin medecin , Long id) {
 
         Disponibilite_Medcin disponibilite = disponibiliterepository.findById(id)
                 .orElseThrow(() -> new RessourceNotFoundException(
                         "Disponibilite not found with id : " + id
                 ));
 
+        if (!disponibilite.getMedecin().getId().equals(medecin.getId())){
+            throw new PersonnelleException(
+                    "Cette disponibilite n'appartient pas au medecin connecte "
+            );
+        }
+
         disponibilite.setDeletedAt(java.time.LocalDateTime.now()) ;
         disponibiliterepository.save(disponibilite) ;
 
         return ResponseEntity.status(HttpStatus.OK).body("Disponibilite soft-deleted with succes ") ;
+    }
+
+    @Audit(operation = Action.READ , description = "Consultation des disponibilites du medecin connecte")
+    public List<DisponibiliteResponse> getDisponibilitesDuMedecin(Medecin medecin) {
+        return disponibiliterepository.findByMedecin_Id(medecin.getId())
+                .stream()
+                .map(this::mapToResponse)
+                .toList() ;
     }
 
     @Audit(operation = Action.READ , description = "Consultation des disponibilites d'un medecin")

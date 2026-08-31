@@ -5,10 +5,12 @@ export type SelectedCabinet = {
 };
 
 const SELECTED_CABINET_KEY = "medos_selected_cabinet";
+export const SELECTED_CABINET_EVENT = "medos:selected-cabinet-changed";
 
 export function saveSelectedCabinet(cabinet: SelectedCabinet) {
   if (typeof window === "undefined") return;
   window.localStorage.setItem(SELECTED_CABINET_KEY, JSON.stringify(cabinet));
+  window.dispatchEvent(new Event(SELECTED_CABINET_EVENT));
 }
 
 export function getSelectedCabinet(): SelectedCabinet | null {
@@ -26,6 +28,7 @@ export function getSelectedCabinet(): SelectedCabinet | null {
 export function clearSelectedCabinet() {
   if (typeof window === "undefined") return;
   window.localStorage.removeItem(SELECTED_CABINET_KEY);
+  window.dispatchEvent(new Event(SELECTED_CABINET_EVENT));
 }
 
 export const selectedCabinetStore = {

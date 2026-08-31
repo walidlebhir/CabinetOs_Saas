@@ -28,12 +28,14 @@ type DashboardNavbarProps = {
   onOpenMobile: () => void;
   displayName?: string;
   settingsHref?: string;
+  profileHref?: string;
 };
 
 export function DashboardNavbar({
   onOpenMobile,
   displayName = "Admin cabinet",
   settingsHref = "/admin-cabinet/parametres",
+  profileHref = "/admin-cabinet/profil",
 }: DashboardNavbarProps) {
   const router = useRouter();
   const accessToken = useSyncExternalStore(
@@ -161,7 +163,7 @@ export function DashboardNavbar({
                 Paramètres du compte
               </Link>
               <Link
-                href={settingsHref}
+                href={profileHref}
                 role="menuitem"
                 onClick={() => setMenuOpen(false)}
                 className="flex items-center gap-2.5 px-4 py-2.5 text-sm font-medium text-medos-ink transition-colors hover:bg-medos-frost hover:text-medos-teal-dark"

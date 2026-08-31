@@ -38,9 +38,7 @@ public class indisponibiliteservice {
 
     @Transactional
     @Audit(operation = Action.CREATE , description = "Creation d'une indisponibilite par un medecin")
-    public IndisponibiliteResponse createIndisponibilite(IndisponibiliteRequest request) {
-
-        Medecin medecin = getMedecin(request.medecinId()) ;
+    public IndisponibiliteResponse createIndisponibilite(Medecin medecin , IndisponibiliteRequest request) {
 
         validerDates(request.dateDebut() , request.dateFin());
 
@@ -57,18 +55,30 @@ public class indisponibiliteservice {
         return mapToResponse(indesponibilitrepository.save(indisponibilite)) ;
     }
 
+    @Audit(operation = Action.CREATE , description = "Creation en lot des indisponibilites du planning")
+    public List<IndisponibiliteResponse> createIndisponibilites(Medecin medecin , List<IndisponibiliteRequest> requests) {
+
+        if (requests == null || requests.isEmpty()){
+            return List.of() ;
+        }
+
+        return requests.stream()
+                .map(request -> this.createIndisponibilite(medecin , request))
+                .toList() ;
+    }
+
     @Transactional
     @Audit(operation = Action.UPDATE , description = "Modification d'une indisponibilite par un medecin")
-    public ResponseEntity<String> updateIndisponibilite(UpdateIndisponibiliteRequest request) {
+    public ResponseEntity<String> updateIndisponibilite(Medecin medecin , UpdateIndisponibiliteRequest request) {
 
         Indisponibilite indisponibilite = indesponibilitrepository.findById(request.id())
                 .orElseThrow(() -> new RessourceNotFoundException(
                         "Indisponibilite not found with id : " + request.id()
                 ));
 
-        if (!indisponibilite.getMedecin().getId().equals(request.medecinId())){
+        if (!indisponibilite.getMedecin().getId().equals(medecin.getId())){
             throw new PersonnelleException(
-                    "Cette indisponibilite n'appartient pas au medecin : " + request.medecinId()
+                    "Cette indisponibilite n'appartient pas au medecin connecte "
             );
         }
 
@@ -78,7 +88,7 @@ public class indisponibiliteservice {
         validerDates(dateDebut , dateFin);
 
         if (request.dateDebut() != null || request.dateFin() != null){
-            verifierChevauchement(request.medecinId() , dateDebut , dateFin , indisponibilite.getId());
+            verifierChevauchement(medecin.getId() , dateDebut , dateFin , indisponibilite.getId());
         }
 
         if (request.dateDebut() != null) indisponibilite.setDate_debut(request.dateDebut());
@@ -92,18 +102,32 @@ public class indisponibiliteservice {
     }
 
     @Transactional
-    @Audit(operation = Action.DELETE , description = "Suppression logique d'une indisponibilite")
-    public ResponseEntity<String> deleteIndisponibilite(Long id) {
+    @Audit(operation = Action.DELETE , description = "Suppression logique d'une indisponibilite par le medecin connecte")
+    public ResponseEntity<String> deleteIndisponibilite(Medecin medecin , Long id) {
 
         Indisponibilite indisponibilite = indesponibilitrepository.findById(id)
                 .orElseThrow(() -> new RessourceNotFoundException(
                         "Indisponibilite not found with id : " + id
                 ));
 
+        if (!indisponibilite.getMedecin().getId().equals(medecin.getId())){
+            throw new PersonnelleException(
+                    "Cette indisponibilite n'appartient pas au medecin connecte "
+            );
+        }
+
         indisponibilite.setDeletedAt(LocalDateTime.now()) ;
         indesponibilitrepository.save(indisponibilite) ;
 
         return ResponseEntity.status(HttpStatus.OK).body("Indisponibilite soft-deleted with succes ") ;
+    }
+
+    @Audit(operation = Action.READ , description = "Consultation des indisponibilites du medecin connecte")
+    public List<IndisponibiliteResponse> getIndisponibilitesDuMedecin(Medecin medecin) {
+        return indesponibilitrepository.findByMedecin_Id(medecin.getId())
+                .stream()
+                .map(this::mapToResponse)
+                .toList() ;
     }
 
     @Audit(operation = Action.READ , description = "Consultation des indisponibilites d'un medecin")

@@ -42,6 +42,9 @@ public class Cabinet extends SoftDeletableEntity {
 
     private String localisation ;
 
+    private  Double latitude ;
+    private  Double longitude ;
+
 
     @Enumerated(EnumType.STRING)
     private Status status;

@@ -5,7 +5,11 @@ import com.OS.ClinicOs.cabinet.Repository.CabinetRepository;
 import com.OS.ClinicOs.home.dto.CabinetDetailResponse;
 import com.OS.ClinicOs.home.dto.CabinetHomeResponse;
 import com.OS.ClinicOs.home.dto.MedecinDetailResponse;
+import com.OS.ClinicOs.home.dto.MedecinProfilDetailResponse;
 import com.OS.ClinicOs.medecin.Entity.Medecin;
+import com.OS.ClinicOs.medecin.Repository.MedecinRepository;
+import com.OS.ClinicOs.planning.Entity.Disponibilite_Medcin;
+import com.OS.ClinicOs.planning.Repository.DisponibiliteRepository;
 import com.OS.ClinicOs.shared.exception.exception_per.RessourceNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,9 +21,15 @@ import java.util.UUID;
 public class HomeService {
 
     private final CabinetRepository cabinetRepository ;
+    private final MedecinRepository medecinRepository ;
+    private final DisponibiliteRepository disponibiliteRepository ;
 
-    public HomeService(CabinetRepository cabinetRepository){
+    public HomeService(CabinetRepository cabinetRepository,
+                       MedecinRepository medecinRepository,
+                       DisponibiliteRepository disponibiliteRepository){
         this.cabinetRepository = cabinetRepository ;
+        this.medecinRepository = medecinRepository ;
+        this.disponibiliteRepository = disponibiliteRepository ;
     }
 
     @Transactional(readOnly = true)
@@ -55,7 +65,9 @@ public class HomeService {
                 cabinet.getVille() ,
                 cabinet.getLocalisation() ,
                 cabinet.getStatus() ,
-                cabinet.getMedecins().size()
+                cabinet.getMedecins().size() ,
+                cabinet.getLatitude() ,
+                cabinet.getLongitude()
         );
     }
 
@@ -69,6 +81,45 @@ public class HomeService {
                 medecin.getTeliphone() ,
                 medecin.getBiographie() ,
                 medecin.getAnneesExperience()
+        );
+    }
+
+    @Transactional(readOnly = true)
+    public MedecinProfilDetailResponse getMedecinProfil(UUID medecinId){
+        Medecin medecin = this.medecinRepository.findById(medecinId)
+                .orElseThrow(() -> new RessourceNotFoundException(
+                        "Medecin introuvable avec l'id : " + medecinId
+                ));
+
+        List<MedecinProfilDetailResponse.DisponibiliteMedecinResponse> dispo = this.disponibiliteRepository
+                .findByMedecin_Id(medecin.getId())
+                .stream()
+                .map(this::toDisponibiliteResponse)
+                .toList();
+
+        return new MedecinProfilDetailResponse(
+                medecin.getId() ,
+                medecin.getNom() ,
+                medecin.getPrenom() ,
+                medecin.getSpecialite() ,
+                medecin.getNumeroOrder() ,
+                medecin.getTeliphone() ,
+                medecin.getBiographie() ,
+                medecin.getAnneesExperience() ,
+                dispo
+        );
+    }
+
+    private MedecinProfilDetailResponse.DisponibiliteMedecinResponse toDisponibiliteResponse(Disponibilite_Medcin d){
+        return new MedecinProfilDetailResponse.DisponibiliteMedecinResponse(
+                d.getId() ,
+                d.getJoursemaine() ,
+                d.getHeur_debut() ,
+                d.getHeur_fin() ,
+                d.getDure_creneau() ,
+                d.getPause_debut() ,
+                d.getPause_fin() ,
+                d.getActif()
         );
     }
 }

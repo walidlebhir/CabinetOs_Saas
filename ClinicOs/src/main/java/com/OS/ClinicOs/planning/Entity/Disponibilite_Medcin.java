@@ -28,7 +28,7 @@ public class Disponibilite_Medcin extends SoftDeletableEntity {
     private Medecin medecin;
 
     @Enumerated(EnumType.STRING)
-    private Week_Day Joursemaine;
+    private Week_Day joursemaine;
 
     private LocalTime heur_debut;
     private LocalTime heur_fin;

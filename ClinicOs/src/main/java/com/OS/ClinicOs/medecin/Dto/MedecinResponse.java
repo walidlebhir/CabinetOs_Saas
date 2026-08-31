@@ -12,6 +12,9 @@ public record MedecinResponse(
         String biographie ,
         int anneesExperience ,
         String email ,
+        boolean hasAccount ,
+        UUID accountId ,
+        Boolean accountActive ,
         UUID cabinetId ,
         String cabinetNom
 ) {

@@ -54,6 +54,7 @@ public class SecrutaireService {
     private SecrutaireResponse toResponse(Secretaire s) {
         String email = (s.getUser() != null) ? s.getUser().getEmail() : null;
         return new SecrutaireResponse(
+                s.getId(),
                 s.getNom(),
                 s.getPrenom(),
                 s.getTeliphone(),
@@ -109,7 +110,7 @@ public class SecrutaireService {
         return ResponseEntity.status(HttpStatus.CREATED).body("Compte cree avec succes.");
     }
 
-    @Transactional(readOnly = true)
+    @Transactional
     @Audit(operation = Action.READ, description = "Get secretaire by id")
     public SecrutaireResponse GetSecretaireById(UUID id) {
         Secretaire secretaire = this.secretairerepository.findById(id)
@@ -117,7 +118,13 @@ public class SecrutaireService {
         return toResponse(secretaire);
     }
 
-    @Transactional(readOnly = true)
+    @Transactional
+    @Audit(operation = Action.READ, description = "Consultation du profil de la secretaire connectee")
+    public SecrutaireResponse GetMonProfil(Secretaire secretaire) {
+        return toResponse(secretaire);
+    }
+
+    @Transactional
     @Audit(operation = Action.READ, description = "Get all secretaires")
     public List<SecrutaireResponse> GetAllSecretaires() {
         return this.secretairerepository.findAll().stream()
@@ -125,7 +132,7 @@ public class SecrutaireService {
                 .toList();
     }
 
-    @Transactional(readOnly = true)
+    @Transactional
     @Audit(operation = Action.READ, description = "Get secretaires by cabinet")
     public List<SecrutaireResponse> GetSecretairesByCabinet(UUID cabinetId) {
         return this.secretairerepository.findByCabinet_Id(cabinetId).stream()
@@ -133,7 +140,7 @@ public class SecrutaireService {
                 .toList();
     }
 
-    @Transactional(readOnly = true)
+    @Transactional
     @Audit(operation = Action.READ, description = "Search secretaires by nom")
     public List<SecrutaireResponse> SearchByNom(String nom) {
         return this.secretairerepository.findByNomContainingIgnoreCase(nom).stream()
@@ -141,7 +148,7 @@ public class SecrutaireService {
                 .toList();
     }
 
-    @Transactional(readOnly = true)
+    @Transactional
     @Audit(operation = Action.READ, description = "Search secretaires by prenom")
     public List<SecrutaireResponse> SearchByPrenom(String prenom) {
         return this.secretairerepository.findByPrenomContainingIgnoreCase(prenom).stream()
@@ -149,7 +156,7 @@ public class SecrutaireService {
                 .toList();
     }
 
-    @Transactional(readOnly = true)
+    @Transactional
     @Audit(operation = Action.READ, description = "Search secretaires by nom and prenom")
     public List<SecrutaireResponse> SearchByNomAndPrenom(String nom, String prenom) {
         return this.secretairerepository.findByNomContainingIgnoreCaseAndPrenomContainingIgnoreCase(nom, prenom).stream()

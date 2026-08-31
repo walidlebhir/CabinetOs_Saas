@@ -2,6 +2,7 @@ package com.OS.ClinicOs.home.api;
 
 import com.OS.ClinicOs.home.dto.CabinetDetailResponse;
 import com.OS.ClinicOs.home.dto.CabinetHomeResponse;
+import com.OS.ClinicOs.home.dto.MedecinProfilDetailResponse;
 import com.OS.ClinicOs.home.services.HomeService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,7 +14,7 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/home")
+@RequestMapping(value = {"/home", "/api/home"})
 public class HomeApi {
 
     private final HomeService homeService ;
@@ -30,5 +31,10 @@ public class HomeApi {
     @GetMapping("/cabinets/{cabinetId}")
     public ResponseEntity<CabinetDetailResponse> getCabinetWithMedecins(@PathVariable UUID cabinetId){
         return ResponseEntity.ok(this.homeService.getCabinetWithMedecins(cabinetId)) ;
+    }
+
+    @GetMapping("/medecins/{medecinId}")
+    public ResponseEntity<MedecinProfilDetailResponse> getMedecinProfil(@PathVariable UUID medecinId){
+        return ResponseEntity.ok(this.homeService.getMedecinProfil(medecinId)) ;
     }
 }

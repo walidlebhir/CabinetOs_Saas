@@ -81,7 +81,55 @@ export const PATIENT_SIDEBAR_SECTIONS: SidebarSection[] = [
   },
 ];
 
-export type DashboardSpace = "admin" | "patient";
+export const MEDECIN_SIDEBAR_SECTIONS: SidebarSection[] = [
+  {
+    label: "Général",
+    items: [
+      {
+        title: "Tableau de bord",
+        href: "/espace-medecin",
+        icon: LayoutDashboard,
+      },
+      { title: "Rendez-vous", href: "/espace-medecin/rendez-vous", icon: CalendarDays },
+      { title: "Mon planning", href: "/espace-medecin/planning", icon: CalendarRange },
+    ],
+  },
+  {
+    label: "Cabinet",
+    items: [
+      { title: "Patients", href: "/espace-medecin/patients", icon: Users },
+      {
+        title: "Dossiers médicaux",
+        href: "/espace-medecin/dossiers",
+        icon: FolderOpen,
+      },
+    ],
+  },
+];
+
+export const SECRETAIRE_SIDEBAR_SECTIONS: SidebarSection[] = [
+  {
+    label: "Général",
+    items: [
+      {
+        title: "Tableau de bord",
+        href: "/espace-secretaire",
+        icon: LayoutDashboard,
+      },
+      { title: "Rendez-vous", href: "/espace-secretaire/rendez-vous", icon: CalendarDays },
+    ],
+  },
+  {
+    label: "Cabinet",
+    items: [
+      { title: "Patients", href: "/espace-secretaire/patients", icon: Users },
+      { title: "Médecins", href: "/espace-secretaire/medecins", icon: Stethoscope },
+      { title: "Mon profil", href: "/espace-secretaire/profil", icon: UserRound },
+    ],
+  },
+];
+
+export type DashboardSpace = "admin" | "patient" | "medecin" | "secretaire";
 
 export type DashboardSpaceConfig = {
   sections: SidebarSection[];
@@ -89,6 +137,7 @@ export type DashboardSpaceConfig = {
   brandRole: string;
   displayName: string;
   settingsHref: string;
+  profileHref: string;
 };
 
 export const DASHBOARD_SPACES: Record<DashboardSpace, DashboardSpaceConfig> = {
@@ -98,6 +147,7 @@ export const DASHBOARD_SPACES: Record<DashboardSpace, DashboardSpaceConfig> = {
     brandRole: "Administrateur",
     displayName: "Admin cabinet",
     settingsHref: "/admin-cabinet/parametres",
+    profileHref: "/admin-cabinet/profil",
   },
   patient: {
     sections: PATIENT_SIDEBAR_SECTIONS,
@@ -105,5 +155,22 @@ export const DASHBOARD_SPACES: Record<DashboardSpace, DashboardSpaceConfig> = {
     brandRole: "Patient",
     displayName: "Patient",
     settingsHref: "/espace-patient/profil",
+    profileHref: "/espace-patient/profil",
+  },
+  medecin: {
+    sections: MEDECIN_SIDEBAR_SECTIONS,
+    brandTitle: "Espace médecin",
+    brandRole: "Médecin",
+    displayName: "Docteur",
+    settingsHref: "/espace-medecin",
+    profileHref: "/espace-medecin/profil",
+  },
+  secretaire: {
+    sections: SECRETAIRE_SIDEBAR_SECTIONS,
+    brandTitle: "Espace secrétaire",
+    brandRole: "Secrétariat",
+    displayName: "Secrétaire",
+    settingsHref: "/espace-secretaire",
+    profileHref: "/espace-secretaire/profil",
   },
 };

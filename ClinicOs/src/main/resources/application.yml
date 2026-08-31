@@ -37,12 +37,17 @@ spring:
             required: ${MAIL_SMTP_STARTTLS:true}
         debug: ${MAIL_DEBUG:false}
 
+  servlet:
+    multipart:
+      max-file-size: ${MULTIPART_MAX_FILE_SIZE:10MB}
+      max-request-size: ${MULTIPART_MAX_REQUEST_SIZE:10MB}
+
 server:
   port: ${SERVER_PORT:8081}
 
 jwt:
   secret: ${JWT_SECRET:}
-  expiration: ${JWT_EXPIRATION:86400000}
+  expiration: ${JWT_EXPIRATION:604800000}
 
 springdoc:
   api-docs:

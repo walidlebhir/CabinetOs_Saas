@@ -5,6 +5,7 @@ import {
   Building2,
   Loader2,
   MapPin,
+  Navigation,
   Pencil,
   Plus,
   Power,
@@ -39,6 +40,8 @@ type FormState = {
   specialite: string;
   ville: string;
   localisation: string;
+  latitude: string;
+  longitude: string;
   status: CabinetStatus;
 };
 
@@ -47,6 +50,8 @@ const emptyForm: FormState = {
   specialite: "",
   ville: "",
   localisation: "",
+  latitude: "",
+  longitude: "",
   status: "ACTIF",
 };
 
@@ -107,6 +112,14 @@ export function CabinetConfig() {
       specialite: cabinet.specialite,
       ville: cabinet.ville,
       localisation: cabinet.localisation ?? "",
+      latitude:
+        cabinet.latitude === null || cabinet.latitude === undefined
+          ? ""
+          : String(cabinet.latitude),
+      longitude:
+        cabinet.longitude === null || cabinet.longitude === undefined
+          ? ""
+          : String(cabinet.longitude),
       status: cabinet.status,
     });
     setFormMode({ type: "edit", cabinetId: cabinet.id });
@@ -131,6 +144,41 @@ export function CabinetConfig() {
       return;
     }
 
+    const latitudeText = form.latitude.trim().replace(",", ".");
+    const longitudeText = form.longitude.trim().replace(",", ".");
+
+    if (
+      (latitudeText !== "" && longitudeText === "") ||
+      (latitudeText === "" && longitudeText !== "")
+    ) {
+      toast.error(
+        "Renseignez la latitude et la longitude ensemble, ou laissez les deux vides."
+      );
+      return;
+    }
+
+    const latitude =
+      latitudeText === "" ? null : Number.parseFloat(latitudeText);
+    const longitude =
+      longitudeText === "" ? null : Number.parseFloat(longitudeText);
+
+    if (latitude !== null && !Number.isFinite(latitude)) {
+      toast.error("La latitude doit être un nombre valide.");
+      return;
+    }
+    if (longitude !== null && !Number.isFinite(longitude)) {
+      toast.error("La longitude doit être un nombre valide.");
+      return;
+    }
+    if (latitude !== null && (latitude < -90 || latitude > 90)) {
+      toast.error("La latitude doit être comprise entre -90 et 90.");
+      return;
+    }
+    if (longitude !== null && (longitude < -180 || longitude > 180)) {
+      toast.error("La longitude doit être comprise entre -180 et 180.");
+      return;
+    }
+
     if (!formMode) return;
 
     setIsSubmitting(true);
@@ -141,6 +189,8 @@ export function CabinetConfig() {
         ville: form.ville.trim(),
         status: form.status,
         localisation: form.localisation.trim() || null,
+        latitude,
+        longitude,
       };
       const message =
         formMode.type === "create"
@@ -361,6 +411,38 @@ export function CabinetConfig() {
                   />
                 </div>
                 <div>
+                  <label htmlFor="latitude" className={labelClass}>
+                    Latitude
+                  </label>
+                  <Input
+                    id="latitude"
+                    name="latitude"
+                    type="text"
+                    inputMode="decimal"
+                    placeholder="33.5731"
+                    value={form.latitude}
+                    onChange={(event) =>
+                      setForm({ ...form, latitude: event.target.value })
+                    }
+                  />
+                </div>
+                <div>
+                  <label htmlFor="longitude" className={labelClass}>
+                    Longitude
+                  </label>
+                  <Input
+                    id="longitude"
+                    name="longitude"
+                    type="text"
+                    inputMode="decimal"
+                    placeholder="-7.5898"
+                    value={form.longitude}
+                    onChange={(event) =>
+                      setForm({ ...form, longitude: event.target.value })
+                    }
+                  />
+                </div>
+                <div>
                   <label htmlFor="status" className={labelClass}>
                     Statut *
                   </label>
@@ -472,6 +554,17 @@ export function CabinetConfig() {
                       {cabinet.ville}
                       {cabinet.localisation ? ` — ${cabinet.localisation}` : ""}
                     </p>
+                    {cabinet.latitude !== null &&
+                      cabinet.latitude !== undefined &&
+                      cabinet.longitude !== null &&
+                      cabinet.longitude !== undefined && (
+                        <p className="flex items-center gap-1.5">
+                          <Navigation className="h-3.5 w-3.5 shrink-0" />
+                          GPS :{" "}
+                          {Number(cabinet.latitude).toFixed(6)},{" "}
+                          {Number(cabinet.longitude).toFixed(6)}
+                        </p>
+                      )}
                   </div>
 
                   <div className="mt-4 flex flex-wrap items-center gap-2 border-t border-medos-line/60 pt-4">

@@ -10,6 +10,8 @@ public record CabinetResponse(
         String specialite,
         String ville,
         String localisation,
-        Status status
+        Status status,
+        Double latitude ,
+        Double longitude
 ) {
 }

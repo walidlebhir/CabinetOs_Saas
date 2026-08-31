@@ -7,6 +7,8 @@ export type AdminCabinet = {
   ville: string;
   localisation: string | null;
   status: CabinetStatus;
+  latitude: number | null;
+  longitude: number | null;
 };
 
 export type CabinetPayload = {
@@ -15,6 +17,8 @@ export type CabinetPayload = {
   ville: string;
   status: CabinetStatus;
   localisation: string | null;
+  latitude: number | null;
+  longitude: number | null;
 };
 
 export function statusLabel(status: CabinetStatus): string {

@@ -2,6 +2,7 @@ package com.OS.ClinicOs.Security.Filters;
 
 import com.OS.ClinicOs.Security.Jwt.JwtService;
 import com.OS.ClinicOs.user.Services.CustomUserDetailsService;
+import io.jsonwebtoken.JwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -43,7 +44,14 @@ public class JwtFilter extends OncePerRequestFilter {
         }
 
         String token = authHeader.substring(7); // retirer "Bearer "
-        String email = jwtService.extractEmail(token);
+
+        String email;
+        try {
+            email = jwtService.extractEmail(token);
+        } catch (JwtException | IllegalArgumentException e) {
+            filterChain.doFilter(request, response);
+            return;
+        }
 
         // Si email valide et pas encore authentifié
         if (email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
